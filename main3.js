@@ -27,22 +27,32 @@ readInterface.on("close", function () {
   const partidosMexico1 = partidosHomeDeMexico();
   console.log(partidosMexico1);
 
-  const partidosMexico2 =   partidosAwayDeMexico();
-  console.log(partidosMexico2);
+   const partidosMexico2 =   partidosAwayDeMexico();
+   console.log(partidosMexico2);
 
 });
 
 function partidosHomeDeMexico() {
-  let paisHomeTeamRegExp = new RegExp(`\\d{4}-\\d{2}-\\d{2},Mexico,[A-Za-z ]*`);
-
+  let paisHomeTeamRegExp = new RegExp(`\\d{4}-\\d{2}-\\d{2},Mexico,[A-Za-z ]*,(?<homeScore>\\d)+,(?<awayScore>\\d+),*`);
   return partidos.filter((partido) =>{
-    return paisHomeTeamRegExp.test(partido);
+      let result = partido.match(paisHomeTeamRegExp)
+      if(!result){
+        return false
+      }
+       return result.groups.homeScore<result.groups.awayScore
+      //console.log(result)
+    // return paisHomeTeamRegExp.test(partido);
   });
 }
 function partidosAwayDeMexico(){
-let paisAwayTeamRegExp = new RegExp(`\\d{4}-\\d{2}-\\d{2},[A-Za-z ]*,Mexico`);
+let paisAwayTeamRegExp = new RegExp(`\\d{4}-\\d{2}-\\d{2},[A-Za-z ]*,Mexico,(?<homeScore>\\d)+,(?<awayScore>\\d+),*`);
 
 return partidos.filter((partido) =>{
-    return paisAwayTeamRegExp.test(partido);
+   let result = partido.match(paisAwayTeamRegExp)
+      if(!result){
+        return false
+      }
+       return result.groups.awayScore<result.groups.homeScore
+  //  return paisAwayTeamRegExp.test(partido);
   });
 }
